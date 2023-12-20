@@ -2,11 +2,11 @@ from utils.shap_cryptic_utils import *
 import argparse
 
 parser = argparse.ArgumentParser(description='Linear Reg on Dataset')
-parser.add_argument('--npz_file', default='./VARIANTS_binary.npz', type = str, help = 'path to SNPs NPZ file')
-parser.add_argument('--output_folder', default='./Outputs/Shap/', type=str, help='folder path to output predictions')
-parser.add_argument('--json_file',default = './mutations_cryptic.json', type = str, help = 'path to SNPs name JSON file')
-parser.add_argument('--variant_file', default = './VARIANTS.csv', type = str, help = 'path to variant csv file')
-parser.add_argument('--raw_mic_file', default='./CRyPTIC_reuse_table_20221019.csv', type=str, help='folder path to raw MIC File')
+parser.add_argument('--npz_file', default='./extracted_data/VARIANTS_binary.npz', type = str, help = 'path to SNPs NPZ file')
+parser.add_argument('--output_folder', default='./Outputs/', type=str, help='folder path to output predictions')
+parser.add_argument('--json_file',default = './extracted_data/mutations_cryptic.json', type = str, help = 'path to SNPs name JSON file')
+parser.add_argument('--variant_file', default = './data/VARIANTS.csv', type = str, help = 'path to variant csv file')
+parser.add_argument('--raw_mic_file', default='./data/CRyPTIC_reuse_table_20221019.csv', type=str, help='folder path to raw MIC File')
 parser.add_argument('--antibiotic', default='MXF', type=str, help='Antibiotic to Extract')
 parser.add_argument('--drop_indels', default=False, type=str2bool, help='Choice to Drop Indels in pre-processing')
 parser.add_argument('--drop_pe_ppe', default=False, type=str2bool, help='Choice to Drop Mutations in PE/PPE Genes')

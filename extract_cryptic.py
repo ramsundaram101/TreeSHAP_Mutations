@@ -3,8 +3,8 @@ import argparse
 import shutil
 
 parser = argparse.ArgumentParser(description='Convert SNPs VCF to Binary Sparse Matrix')
-parser.add_argument('--gz_file', default = './VARIANTS.csv.gz', type = str, help = 'path to SNP CSV.GZ file')
-parser.add_argument('--output_folder', default='./', type=str, help='folder path to output NPZ file')
+parser.add_argument('--gz_file', default = './data/VARIANTS.csv.gz', type = str, help = 'path to SNP CSV.GZ file')
+parser.add_argument('--output_folder', default='./extracted_data/', type=str, help='folder path to output NPZ file')
 parser.add_argument('--output_json', default='mutations_cryptic.json', type=str, help='folder path to output Mutation JSON file')
 args = parser.parse_args()
 

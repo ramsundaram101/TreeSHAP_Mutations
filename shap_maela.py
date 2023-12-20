@@ -2,11 +2,11 @@ from utils.shap_maela_utils import *
 import argparse
 
 parser = argparse.ArgumentParser(description='Linear Reg on Dataset')
-parser.add_argument('--npz_file', default='./maela_binary.npz', type = str, help = 'path to SNPs NPZ file')
-parser.add_argument('--output_folder', default='./Outputs/Shap/', type=str, help='folder path to output predictions')
-parser.add_argument('--json_file',default = './mutations_maela.json', type = str, help = 'path to SNPs name JSON file')
-parser.add_argument('--gene_sequence_file', default = './sequence.txt', type = str, help = 'folder path to the gene sequence FASTA format txt file')
-parser.add_argument('--raw_mic_file', default='./pen_mics_maela_snps.csv', type=str, help='folder path to raw MIC File')
+parser.add_argument('--npz_file', default='./extracted_data/maela_binary.npz', type = str, help = 'path to SNPs NPZ file')
+parser.add_argument('--output_folder', default='./Outputs/', type=str, help='folder path to output predictions')
+parser.add_argument('--json_file',default = './extracted_data/mutations_maela.json', type = str, help = 'path to SNPs name JSON file')
+parser.add_argument('--gene_sequence_file', default = './data/sequence.txt', type = str, help = 'folder path to the gene sequence FASTA format txt file')
+parser.add_argument('--raw_mic_file', default='./data/pen_mics_maela_snps.csv', type=str, help='folder path to raw MIC File')
 parser.add_argument('--antibiotic', default='PCN', type=str, help='Antibiotic to Extract')
 parser.add_argument('--drop_indels', default=False, type=str2bool, help='Choice to Drop Indels in pre-processing')
 parser.add_argument('--drop_pe_ppe', default=False, type=str2bool, help='Choice to Drop Mutations in PE/PPE Genes')
