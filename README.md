@@ -15,34 +15,27 @@ Here's a brief description of the repository:
 
 Here's how to use the files in this repository after cloning it.
 
-##Extraction
-
+## Extraction
 
 **Note:** You can skip this step if you'd like, as we've already stored the extracted versions in `extracted_data`
 
-###Extracting maela
-
+### Extracting maela
 
 `python extract_maela.py --gz_file ./data/maela.vcf.gz --output_json mutations_maela.json`
 
-###Extracting cryptic
-
+### Extracting cryptic
 
 `python extract_cryptic.py --gz_file ./data/VARIANTS_SAMPLE.csv.gz --output_json mutations_cryptic.json`
 
-
 **Note:** If you're using the original larger VARIANTS file, remove the `_Sample`
 
-###Shap maela
-
+### Shap maela
 
 `python shap_maela.py --npz_file ./extracted_data/maela_binary.npz --json_file ./extracted_data/mutations_maela.json --gene_sequence_file ./data/sequence.txt --raw_mic_file ./data/pen_mics_maela_snps.csv`
 
-###Shap cryptic
-
+### Shap cryptic
 
 `python shap_cryptic.py --npz_file ./extracted_data/VARIANTS_SAMPLE_binary.npz --json_file ./extracted_data/mutations_cryptic.json --variant_file ./data/VARIANTS_SAMPLE.csv --raw_mic_file ./data/CRyPTIC_reuse_table_20221019.csv --antibiotic MXF --drop_indels False --drop_pe_ppe True`
-
 
 **Note:**
 1. You can run the algorithm on any of the 13 antibiotics in `CRyPTIC_reuse_table_20221019.csv` by changing the `antibiotic` argument
