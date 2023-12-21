@@ -29,6 +29,8 @@ Here's how to use the files in this repository after cloning it.
 
 **Note:** If you're using the original larger VARIANTS file, remove the `_Sample`
 
+## ML/Shap Bit
+
 ### Shap maela
 
 `python shap_maela.py --npz_file ./extracted_data/maela_binary.npz --json_file ./extracted_data/mutations_maela.json --gene_sequence_file ./data/sequence.txt --raw_mic_file ./data/pen_mics_maela_snps.csv`
