@@ -1,5 +1,5 @@
 # TreeSHAP_Mutations
-This repository contains code for a pipeline that ultimately utilises Tree-Based Interpretable ML and TreeSHAP to identify and interpret antibiotic resistance mechanisms in pathogenic bacteria. 
+This repository contains code for a pipeline that ultimately utilises Tree-Based Interpretable ML algorithms, with said interpretability bestowed by TreeSHAP. This is done with the aim to identify and interpret antibiotic resistance mechanisms in pathogenic bacteria. 
 We return a `.csv` file that contains the mutations in order of their SHAPLey values (signifying their importance) towards antibiotic resistance. 
 
 This repository includes data from two different datasets:
