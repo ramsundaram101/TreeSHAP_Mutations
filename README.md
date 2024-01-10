@@ -15,6 +15,18 @@ Here's a brief description of the repository:
 
 Here's how to use the files in this repository after cloning it.
 
+## Dependency Installation
+We can optionally create a virtual environment (named `treeshap` here to install the required Python packages)
+
+`python3 -m venv treeshap`
+
+To activate it:
+**Windows:** `treeshap\Scripts\activate`
+**MacOS or Unix:** `source treeshap/bin/activate`
+
+Following this, we will install the required packages via pip:
+`pip install -r requirements.txt`
+
 ## Extraction
 
 **Note:** You can skip this step if you'd like, as we've already stored the extracted versions in `extracted_data`
