@@ -16,7 +16,7 @@ Here's a brief description of the repository:
 Here's how to use the files in this repository after cloning it.
 
 ## Dependency Installation
-We can optionally create a virtual environment (named `treeshap` here to install the required Python packages)
+We can optionally create a virtual environment (named `treeshap` here) to install the required Python packages)
 
 `python3 -m venv treeshap`
 
