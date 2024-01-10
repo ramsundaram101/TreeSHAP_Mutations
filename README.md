@@ -21,8 +21,11 @@ We can optionally create a virtual environment (named `treeshap` here) to instal
 `python3 -m venv treeshap`
 
 To activate it:
+
 **Windows:** `treeshap\Scripts\activate`
+
 **MacOS or Unix:** `source treeshap/bin/activate`
+
 
 Following this, we will install the required packages via pip:
 `pip install -r requirements.txt`
