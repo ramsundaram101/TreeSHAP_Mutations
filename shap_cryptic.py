@@ -13,6 +13,7 @@ parser.add_argument('--drop_pe_ppe', default=False, type=str2bool, help='Choice 
 args = parser.parse_args()
 
 if __name__ == '__main__':
+    #Parsing arguments
     npz_file = args.npz_file
     output_folder = args.output_folder
     json_file = args.json_file
@@ -22,18 +23,23 @@ if __name__ == '__main__':
     drop_indels = args.drop_indels
     drop_pe_ppe = args.drop_pe_ppe
     
+    #Ensuring output folder exists
     Path(output_folder).mkdir(parents=True, exist_ok=True)
     Path(output_folder+antibiotic).mkdir(parents=True, exist_ok=True)
     
+    #Reading in data
     mic_df, _ = read_mic(mic_file, variant_file, antibiotic)
     npz_data = sparse.load_npz(npz_file)
     snp_list = read_list(json_file)
     
+    #Running SHAP across DT, RF and XGB selected data
     shap_dt_df = dt_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
     shap_rf_df = rf_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
     shap_xgb_df = xgb_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
     
+    #Creating variant dataframe
     var_df = pd.read_csv(variant_file, low_memory = False)
     
+    #Creating output dataframe
     output_df = shap_result(shap_dt_df, shap_rf_df, shap_xgb_df, var_df, drop_pe_ppe)
     output_df.to_csv(output_folder+antibiotic+'/'+'SHAP_Avg_'+antibiotic+'.csv', index = False)

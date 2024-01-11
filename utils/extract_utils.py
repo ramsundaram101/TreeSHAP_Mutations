@@ -7,7 +7,8 @@ import re
 import json
 import pandas as pd
 
-#Uncompressing .gz file
+#Uncompressing the imported .gz file
+#gz_file: path to the .gz file
 def unzip_gz(gz_file):
     
     if gz_file.split('.')[-1] != 'gz':
@@ -20,6 +21,7 @@ def unzip_gz(gz_file):
             return file
         
 #Converts the csv file to a sparse matrix (SNPs)
+#variant_file: path to the variant file (.csv file)
 def convert_to_sparse_csv(variant_file):
     
     #Defining two sets to store unique Mutations and Unique Mutation that occur more than once
@@ -95,6 +97,7 @@ def convert_to_sparse_csv(variant_file):
     return sparse_matrix, shape, list(mut_index_dict.keys())
 
 #Converts the vcf file to a sparse matrix (SNPs)
+#vcf_file: path to the vcf file (.vcf file)
 def convert_to_sparse_vcf(vcf_file):
     
     #Defining empty lists. These will store row & col index and data of non-zero entries respectively
@@ -157,10 +160,15 @@ def convert_to_sparse_vcf(vcf_file):
     sparse_matrix = sparse.csr_matrix((data, (rows, cols)), shape = shape)
     return sparse_matrix, shape, snp_labels
 
+#Function to write a list to a json file
+#a_list: list to be written to json file
+#output_json: path to desired output location of the json file
 def write_list(a_list, output_json):
     with open(output_json, "w") as fp:
         json.dump(a_list, fp)
 
+#Function to generate a dictionary of sample indexes and their corresponding sample IDs
+#variant_file: path to the variant file (.csv file)
 def sample_dict(variant_file):
     index_dict = {} #Dict to store sample indexes
     var_gene_dict = {} #Dict to store sample genes and variants
@@ -183,7 +191,10 @@ def sample_dict(variant_file):
         
     return index_dict, var_gene_dict
 
-#Function to create MIC value dict
+#Function to create MIC value dict of all samples
+#mic_file: path to the MIC file (.csv file)
+#variant_file: path to the variant file (.csv file)
+#antibiotic: antibiotic of interest to be mapped
 def read_mic(mic_file, variant_file, antibiotic):
     sd, vgd = sample_dict(variant_file) #Index Dictionary of all Samples
     md = {}
@@ -214,6 +225,8 @@ def read_mic(mic_file, variant_file, antibiotic):
     df["Log_MIC_Normalized"] = (df["Log_MIC"] - df["Log_MIC"].mean()) / df["Log_MIC"].std()
     return df, index_list
 
+#Function to count the number of lines in a file
+#file: path to the file
 def line_count(file):
     count = 0
     with open(file, mode='r') as f:

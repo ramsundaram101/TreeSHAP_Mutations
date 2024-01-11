@@ -14,6 +14,8 @@ from shap.plots import *
 import json
 import re
 
+#Defining function to parse arguments, converting to bool if necessary
+#v: argument to be converted to bool
 def str2bool(v):
     if isinstance(v, bool):
         return v
@@ -35,31 +37,47 @@ def get_gbr_model():
     return model
 
 #Defining function to give us RF model
+#no_jobs: number of jobs to run in parallel
 def get_rf_model(no_jobs = 1):
     model = RandomForestRegressor(n_jobs = no_jobs, n_estimators = 10, min_samples_split = 4, 
                                   min_samples_leaf = 2, max_depth = 15)
     return model
 
 #Defining function to give us XGB model
+#no_jobs: number of jobs to run in parallel
 def get_xgb_model(no_jobs=1):
     model = xgb.XGBRegressor(objective = 'reg:squarederror', nthreads = no_jobs)
     return model
 
-
+#Function to train the desired ML model
+#x_train: training data
+#y_train: training labels
+#model: ML model to be trained
+#no_epochs: number of epochs to train for
 def train_model(x_train, y_train, model, no_epochs=100):
     model.fit(x_train, y_train)
-        
+
+#Function to make predictions on test data
+#model: ML model to be used for prediction
+#x_test: test data
+#y_test: test labels
 def make_preds(model, x_test, y_test):
     preds = model.predict(x_test)
     return preds
 
 # Read list to memory
+# filename: path to json file
 def read_list(filename):
     # for reading also binary mode is important
     with open( filename, 'rb') as fp:
         n_list = json.load(fp)
         return n_list
-    
+
+#Main SHAP Loop to get SHAP Values across all 4 Tree-Based ML Models
+#X: Training Data (reduced sparse matrix)
+#y: Training Labels (df)
+#reduced_snp_list: List of SNPs selected by feature selection for which we want SHAP values
+#Uncomment the 4 lines below the shap plots function to add plots to the output folder
 def shap_main(X, y, reduced_snp_list):
         
     X = X.todense()
@@ -174,7 +192,12 @@ def shap_main(X, y, reduced_snp_list):
     shap_df = shap_df[['Mutation_ID'] + [col for col in shap_df if col != 'Mutation_ID']]
     
     return shap_df
-
+#Function to prepare data for SHAP by selecting samples for which we have MIC values, performing feature selection via DT and returning the reduced data
+#data: data to be used for feature selection (npz data)
+#csv: csv file containing MIC values
+#snp_list: list of SNP (can include indels) names
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
+#i: column number of MIC values in the csv file (3 for maela)
 #Here, we take i = 3 as we only care about the Log Normalized values of MIC
 def data_prep_dt(data, csv, snp_list, drop_indels, i=3):
     labels = csv.iloc[:, i]
@@ -200,13 +223,27 @@ def data_prep_dt(data, csv, snp_list, drop_indels, i=3):
     print(len(reduced_snp_list))
 
     return reduced.astype(np.float32), labels.astype(np.float32), reduced_snp_list
-    
+
+#Main loop for DT selected data
+#npz_data: data to be used for feature selection (sparse matrix)
+#mic: df containing MIC values
+#output_folder: folder path to output predictions
+#snp_list: list of SNP (can include indels) names
+#antibiotic: antibiotic of interest
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
 def dt_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):    
     X, y, reduced_snp_list = data_prep_dt(npz_data, mic, snp_list, drop_indels)
     shap_df = shap_main(X, y, reduced_snp_list)
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_DT_'+antibiotic+'.csv', index = False)
     return shap_df
-    
+
+#Function to prepare data for SHAP by selecting samples for which we have MIC values, performing feature selection via RF and returning the reduced data
+#data: data to be used for feature selection (npz data)
+#csv: csv file containing MIC values
+#snp_list: list of SNP (can include indels) names
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
+#i: column number of MIC values in the csv file (3 for maela)
+#Here, we take i = 3 as we only care about the Log Normalized values of MIC
 def data_prep_rf(data, csv, snp_list, drop_indels, i=3):
     labels = csv.iloc[:, i]
     index_list = list(csv.iloc[:, 4]) #4 is the column with the index list we need
@@ -231,7 +268,14 @@ def data_prep_rf(data, csv, snp_list, drop_indels, i=3):
     print(len(reduced_snp_list))
 
     return reduced.astype(np.float32), labels.astype(np.float32), reduced_snp_list
-    
+
+#Main loop for RF selected data
+#npz_data: data to be used for feature selection (sparse matrix)
+#mic: df containing MIC values
+#output_folder: folder path to output predictions
+#snp_list: list of SNP (can include indels) names
+#antibiotic: antibiotic of interest
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)    
 def rf_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
     
     X, y, reduced_snp_list = data_prep_rf(npz_data, mic, snp_list, drop_indels)
@@ -239,6 +283,13 @@ def rf_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_RF_'+antibiotic+'.csv', index = False)
     return shap_df
 
+#Function to prepare data for SHAP by selecting samples for which we have MIC values, performing feature selection via XGB and returning the reduced data
+#data: data to be used for feature selection (npz data)
+#csv: csv file containing MIC values
+#snp_list: list of SNP (can include indels) names
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
+#i: column number of MIC values in the csv file (3 for maela)
+#Here, we take i = 3 as we only care about the Log Normalized values of MIC
 def data_prep_xgb(data, csv, snp_list, drop_indels, i=3):
     labels = csv.iloc[:, i]
     index_list = list(csv.iloc[:, 4]) #4 is the column with the index list we need
@@ -264,6 +315,13 @@ def data_prep_xgb(data, csv, snp_list, drop_indels, i=3):
 
     return reduced.astype(np.float32), labels.astype(np.float32), reduced_snp_list
 
+#Main loop for DT selected data
+#npz_data: data to be used for feature selection (sparse matrix)
+#mic: df containing MIC values
+#output_folder: folder path to output predictions
+#snp_list: list of SNP (can include indels) names
+#antibiotic: antibiotic of interest
+#drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
 def xgb_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
     
     X, y, reduced_snp_list = data_prep_xgb(npz_data, mic, snp_list, drop_indels)
@@ -271,6 +329,9 @@ def xgb_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_XGB_'+antibiotic+'.csv', index = False)
     return shap_df
 
+#Function to look up gene for each mutation
+#gene_sequence_file: path to gene sequence file (.txt file)
+#mut_list: list of mutation IDs
 def gene_search(gene_sequence_file, mut_list):
     #First creating a gene_dict with positions of all known genes mapped to gene name
     with open(gene_sequence_file, mode = 'r') as f:
@@ -317,6 +378,12 @@ def gene_search(gene_sequence_file, mut_list):
     output_df = pd.DataFrame.from_dict(dict_list)
     return output_df
 
+#Function to create final output dataframes of shap values for each mutation
+#df1: shap output df from DT model
+#df2: shap output df from RF model
+#df3: shap output df from XGB model
+#gene_sequence_file: path to gene sequence file (.txt file)
+#drop_pe_ppe: bool value to drop mutations in PE/PPE genes (toggle to True in args given to the .py file to drop mutations in PE/PPE genes)
 def shap_result(df1, df2, df3, gene_sequence_file, drop_pe_ppe):
     
     df1['Mutation_ID'] = df1.index
