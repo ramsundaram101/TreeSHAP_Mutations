@@ -8,10 +8,12 @@ parser.add_argument('--output_json', default='mutations_maela.json', type=str, h
 args = parser.parse_args()
 
 if __name__ == '__main__':
+    #Parsing arguments
     gz_file = args.gz_file
     output_folder = args.output_folder
     output_json = output_folder + args.output_json
     
+    #Unzipping and converting .vcf file to sparse matrix
     vcf_file = unzip_gz(gz_file)
     sparse_matrix, shape, snp_list = convert_to_sparse_vcf(vcf_file)
     

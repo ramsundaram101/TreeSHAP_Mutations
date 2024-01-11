@@ -9,6 +9,7 @@ parser.add_argument('--output_json', default='mutations_cryptic.json', type=str,
 args = parser.parse_args()
 
 if __name__ == '__main__':
+    #Parsing arguments
     gz_file = args.gz_file
     output_folder = args.output_folder
     output_json = output_folder + args.output_json 
