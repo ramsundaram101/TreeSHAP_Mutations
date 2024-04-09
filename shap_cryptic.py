@@ -10,6 +10,7 @@ parser.add_argument('--raw_mic_file', default='./data/CRyPTIC_reuse_table_202210
 parser.add_argument('--antibiotic', default='MXF', type=str, help='Antibiotic to Extract')
 parser.add_argument('--drop_indels', default=False, type=str2bool, help='Choice to Drop Indels in pre-processing')
 parser.add_argument('--drop_pe_ppe', default=False, type=str2bool, help='Choice to Drop Mutations in PE/PPE Genes')
+parser.add_argument('--raw_files', default=False, type=str2bool, help='Choice to Output RAW Shap files')
 args = parser.parse_args()
 
 if __name__ == '__main__':
@@ -22,6 +23,7 @@ if __name__ == '__main__':
     antibiotic = args.antibiotic
     drop_indels = args.drop_indels
     drop_pe_ppe = args.drop_pe_ppe
+    raw_files = args.raw_files
     
     #Ensuring output folder exists
     Path(output_folder).mkdir(parents=True, exist_ok=True)
@@ -33,9 +35,9 @@ if __name__ == '__main__':
     snp_list = read_list(json_file)
     
     #Running SHAP across DT, RF and XGB selected data
-    shap_dt_df = dt_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
-    shap_rf_df = rf_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
-    shap_xgb_df = xgb_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels)
+    shap_dt_df = dt_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels, raw_files)
+    shap_rf_df = rf_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels, raw_files)
+    shap_xgb_df = xgb_main(npz_data, mic_df, output_folder, snp_list, antibiotic, drop_indels, raw_files)
     
     #Creating variant dataframe
     var_df = pd.read_csv(variant_file, low_memory = False)

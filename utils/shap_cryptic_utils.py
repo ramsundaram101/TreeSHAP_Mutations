@@ -77,8 +77,11 @@ def read_list(filename):
 #X: Training Data (reduced sparse matrix)
 #y: Training Labels (df)
 #reduced_snp_list: List of SNPs selected by feature selection for which we want SHAP values
+#output_folder: folder path to output predictions
+#data_model: data model to be used for feature selection
+#raw_files: bool value to toggle whether to output raw Shapiro values (toggle to True in args given to the .py file to output raw SHAP values)
 #Uncomment the 4 lines below the shap plots function to add plots to the output folder
-def shap_main(X, y, reduced_snp_list):
+def shap_main(X, y, reduced_snp_list, output_folder, data_model, raw_files):
         
     X = X.todense()
     
@@ -92,7 +95,8 @@ def shap_main(X, y, reduced_snp_list):
     
     shap_dt_df = pd.DataFrame(shap_test.values, columns=shap_test.feature_names)
     
-#     shap_df.to_csv(output_folder+'shap_dt_dt.csv')
+    if raw_files:
+        shap_df.to_csv(output_folder+'shap_dt_'+data_model+'.csv')
     
     #Creating dictionary for final csv with Normalized Values
     dt_dict = {}
@@ -113,9 +117,10 @@ def shap_main(X, y, reduced_snp_list):
     shap_test = explainer(X)
     
     shap_gbr_df = pd.DataFrame(shap_test.values, columns=shap_test.feature_names)
-    
-#     shap_df.to_csv(output_folder+'shap_gbr_dt.csv')
-    
+
+    if raw_files:    
+        shap_df.to_csv(output_folder+'shap_gbr_'+data_model+'.csv')
+        
     #Creating dictionary for final csv with Normalized Values
     gbr_dict = {}
     for col in shap_gbr_df.columns:
@@ -138,8 +143,9 @@ def shap_main(X, y, reduced_snp_list):
     
     shap_rf_df = pd.DataFrame(shap_test.values, columns=shap_test.feature_names)
     
-#     shap_df.to_csv(output_folder+'shap_rf_dt.csv')
-    
+    if raw_files:
+        shap_df.to_csv(output_folder+'shap_rf_'+data_model+'.csv')
+
     #Creating dictionary for final csv with Normalized Values
     rf_dict = {}
     for col in shap_rf_df.columns:
@@ -167,6 +173,8 @@ def shap_main(X, y, reduced_snp_list):
         xgb_dict[col] = shap_xgb_df[col].mean()
     
 #     shap_df.to_csv(output_folder+'shap_xgb_dt.csv')
+    if raw_files:
+        shap_df.to_csv(output_folder+'shap_xgb_'+data_model+'.csv')
     
 #     shap.plots.bar(shap_test, show = False)
 #     f = plt.gcf()
@@ -230,9 +238,10 @@ def data_prep_dt(data, csv, snp_list, drop_indels, i=7):
 #snp_list: list of SNP (can include indels) names
 #antibiotic: antibiotic of interest
 #drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
-def dt_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):    
+#raw_files: bool value to output raw SHAP values (toggle to True in args given to the .py file to output raw SHAP values)
+def dt_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels, raw_files):    
     X, y, reduced_snp_list = data_prep_dt(npz_data, mic, snp_list, drop_indels)
-    shap_df = shap_main(X, y, reduced_snp_list)
+    shap_df = shap_main(X, y, reduced_snp_list, output_folder, 'dt', raw_files)
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_DT_'+antibiotic+'.csv', index = False)
     return shap_df
 
@@ -273,10 +282,11 @@ def data_prep_rf(data, csv, snp_list, drop_indels, i=7):
 #snp_list: list of SNP (can include indels) names
 #antibiotic: antibiotic of interest
 #drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
-def rf_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
+#raw_files: bool value to output raw SHAP values (toggle to True in args given to the .py file to output raw SHAP values)
+def rf_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels, raw_files):
     
     X, y, reduced_snp_list = data_prep_rf(npz_data, mic, snp_list, drop_indels)
-    shap_df = shap_main(X, y, reduced_snp_list)
+    shap_df = shap_main(X, y, reduced_snp_list, output_folder, 'rf', raw_files)
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_RF_'+antibiotic+'.csv', index = False)
     return shap_df
 
@@ -317,10 +327,11 @@ def data_prep_xgb(data, csv, snp_list, drop_indels, i=7):
 #snp_list: list of SNP (can include indels) names
 #antibiotic: antibiotic of interest
 #drop_indels: bool value to drop indels from the data (toggle to True in args given to the .py file to drop indels)
-def xgb_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels):
+#raw_files: bool value to output raw SHAP values (toggle to True in args given to the .py file to output raw SHAP values)
+def xgb_main(npz_data, mic, output_folder, snp_list, antibiotic, drop_indels, raw_files):
     
     X, y, reduced_snp_list = data_prep_xgb(npz_data, mic, snp_list, drop_indels)
-    shap_df = shap_main(X, y, reduced_snp_list)
+    shap_df = shap_main(X, y, reduced_snp_list, output_folder, 'xgb', raw_files)
     shap_df.to_csv(output_folder+antibiotic+'/'+'SHAP_XGB_'+antibiotic+'.csv', index = False)
     return shap_df
 
